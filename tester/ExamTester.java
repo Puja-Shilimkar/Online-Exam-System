@@ -6,6 +6,7 @@ import com.pojo.Question;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Scanner;
 
@@ -108,13 +109,31 @@ public class ExamTester {
             } catch (Exception ex) {
                 ex.printStackTrace();
             }
-
-
-     	}
-
      
+        // client: Retrieve Results
+        try {
+            Connection con = DbConnection.getDBConnection();
+            PreparedStatement pstmt = con.prepareStatement("SELECT * FROM results");
+            ResultSet rs = pstmt.executeQuery();
+
+            System.out.println("Results:");
+            while (rs.next()) {
+                int resultId = rs.getInt("result_id");
+                int userId = rs.getInt("user_id");
+                int score = rs.getInt("score");
+
+                System.out.println("Result ID: " + resultId);
+                System.out.println("User ID: " + userId);
+                System.out.println("Score: " + score);
+            }
+
+            // Close resources
+            rs.close();
+            pstmt.close();
+            con.close();
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+
     }
-
-
-
-
+}
